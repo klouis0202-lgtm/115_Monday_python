@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <title>房間列表</title>
+  </head>
+  <body>
+    <h1>房間列表</h1>
+
+    {% if keyword %}
+      <p>目前搜尋：{{ keyword }}</p>
+    {% endif %}
+
+    <ul>
+      {% for room in rooms %}
+        <li>
+          <a href="{% url 'chess:room-detail' room.id %}">
+            {{ room.name }}｜{{ room.code }}
+          </a>
+        </li>
+      {% empty %}
+        <li>目前沒有符合條件的房間。</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
+
