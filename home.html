@@ -1,469 +1,100 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>12人瑞士輪計分與對局紀錄 ｜ 免費瑞士輪計分工具</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f7f6f2">
+<meta name="description" content="ChessOracle 西洋棋局面分析與棋局複盤工具。找到最佳應對、理解主要變化，從每一步看懂整個局面。">
+<title>ChessOracle｜看見棋盤之外的下一步。</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  :root{
-    --paper:#FAF8F4;
-    --paper-card:#FFFDF9;
-    --ink:#2F2E2B;
-    --ink-soft:#77736B;
-    --line:#E7E2D9;
-    --blue:#2563EB;
-  }
-  html{ -webkit-text-size-adjust:100%; }
-  body{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:"Noto Sans TC","PingFang TC","Hiragino Sans TC","Microsoft JhengHei",system-ui,-apple-system,"Segoe UI",sans-serif;
-    -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
-  }
-  .paper-card{
-    background:var(--paper-card);
-    border:1px solid var(--line);
-    border-radius:18px;
-  }
-  .hairline{ height:1px; background:var(--line); }
-  .btn-blue{
-    background:var(--blue);
-    color:#fff;
-    border-radius:9999px;
-    transition:transform .18s ease, box-shadow .18s ease, background-color .18s ease;
-    box-shadow:0 10px 22px -14px rgba(37,99,235,.9);
-  }
-  .btn-blue:hover{ background:#1D4FD8; transform:translateY(-1px); }
-  .btn-blue:active{ transform:translateY(0); }
-  .btn-blue:focus-visible{ outline:2px solid #1D4FD8; outline-offset:3px; }
-
-  /* ── 卡片輪播 ───────────────────────────── */
-  .track{
-    transition:transform .5s cubic-bezier(.22,.61,.36,1);
-    will-change:transform;
-  }
-  .dot{
-    width:8px; height:8px; border-radius:9999px;
-    background:#DAD4C8; border:0; padding:0; cursor:pointer;
-    transition:width .25s ease, background-color .25s ease;
-  }
-  .dot.active{ width:24px; background:var(--blue); }
-  .nav-btn{
-    width:40px; height:40px; border-radius:9999px;
-    border:1px solid var(--line); background:var(--paper-card); color:var(--ink);
-    display:flex; align-items:center; justify-content:center;
-    transition:background-color .18s ease, border-color .18s ease;
-  }
-  .nav-btn:hover{ background:#F2EFE8; border-color:#DAD4C8; }
-  .nav-btn:focus-visible{ outline:2px solid var(--blue); outline-offset:3px; }
-  @media (min-width:768px){
-    .track{ transform:none !important; }
-  }
-  @media (prefers-reduced-motion:reduce){
-    .track{ transition:none; }
-    html{ scroll-behavior:auto; }
-  }
+:root{--paper:#f7f6f2;--white:#fffefa;--ink:#282d33;--muted:#697078;--line:#dedfdc;--blue:#2858bc;--serif:"Noto Serif TC","Songti TC","PMingLiU",Georgia,serif}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft JhengHei",sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased}h1,h2,h3,p,figure{margin:0}a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer;touch-action:manipulation}button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:3px solid #6a94eb;outline-offset:5px}.container{width:min(1160px,calc(100% - 64px));margin-inline:auto}.notation{font-family:Consolas,monospace;font-variant-numeric:tabular-nums}.muted{color:var(--muted)}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.skip{position:fixed;top:10px;left:10px;z-index:100;padding:10px;background:white;transform:translateY(-160%)}.skip:focus{transform:none}.header{border-bottom:1px solid var(--line)}.header-inner{height:84px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:inline-flex;align-items:center;gap:10px;font:24px Georgia,serif;letter-spacing:-.9px}.brand-mark{font:33px/1 "Segoe UI Symbol",serif;color:var(--blue)}nav{display:flex;align-items:center;gap:32px;font-size:14px}.nav-link{color:var(--muted)}.nav-link:hover{color:var(--blue)}.button{min-height:50px;padding:12px 25px;border:1px solid var(--blue);background:var(--blue);color:white;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;gap:22px;font-weight:600;font-size:15px;box-shadow:0 3px 7px #2858bc12;transition:transform .2s,background .2s}.button:hover{background:#204ba6;transform:translateY(-2px)}.button.small{min-height:44px;padding:8px 17px;font-size:13px;gap:15px}.eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--blue);font-size:12px;letter-spacing:2px;font-weight:600}.eyebrow:before{content:"";width:20px;height:1px;background:currentColor}.hero{padding:69px 0 80px;text-align:center}.hero h1{margin:20px 0;font:600 clamp(34px,4.6vw,57px)/1.4 var(--serif);letter-spacing:1px}.hero h1 span{color:var(--blue)}.hero-description{font-size:16px;color:var(--muted);line-height:1.9;max-width:610px;margin:auto}.hero-cta{margin-top:28px}.hero-note{margin-top:12px;font-size:11px;color:var(--muted);letter-spacing:1px}.analysis-window{margin:46px auto 0;width:min(800px,100%);background:var(--white);border:1px solid #d6dadb;border-radius:10px;text-align:left;box-shadow:0 18px 45px #26374b0a;overflow:hidden}.window-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--line);padding:13px 22px;font-size:11px;color:var(--muted)}.window-title{display:flex;gap:10px;align-items:center}.window-title:before{content:"";width:7px;height:7px;background:#6d8e7d;border-radius:50%}.demo-tag{padding:2px 7px;border:1px solid var(--line);border-radius:3px;font-size:10px;white-space:nowrap}.analysis-layout{display:grid;grid-template-columns:1.15fr 1fr;align-items:center}.board-pane{padding:24px;border-right:1px solid var(--line)}.board-with-eval{display:grid;grid-template-columns:7px minmax(0,1fr);gap:12px}.eval-bar{background:#343c46;border:1px solid #d1d7d8;border-radius:3px;overflow:hidden;display:flex;align-items:flex-end;margin-bottom:22px}.eval-bar:after{content:"";width:100%;height:55%;background:#faf9f4}.board{position:relative;width:100%;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);border:1px solid #b7c1c5;container-type:inline-size}.square{aspect-ratio:1;background:#f1f0e8;display:grid;place-items:center;min-width:0;position:relative}.square.dark{background:#becbd1}.square.highlight{box-shadow:inset 0 0 0 100px #2858bc22}.piece{font-family:"Segoe UI Symbol","Apple Symbols","DejaVu Sans",serif;font-size:clamp(17px,4vw,39px);font-size:10cqi;line-height:1;color:#29323b;z-index:1}.piece.white{color:#fffef6;text-shadow:-1px 0 #4a535c,0 1px #4a535c,1px 0 #4a535c,0 -1px #4a535c}.rank{position:absolute;top:1px;left:3px;color:#52616b;font:8px/1.4 Consolas,monospace}.files{display:grid;grid-template-columns:repeat(8,1fr);text-align:center;font:10px/22px Consolas,monospace;color:var(--muted)}.board-arrow{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}.board-caption{display:flex;justify-content:space-between;margin:9px 0 0 19px;font-size:10px;color:var(--muted)}.analysis-pane{padding:26px 28px}.analysis-heading{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}.turn{display:flex;align-items:center;gap:6px}.turn:before{content:"";width:8px;height:8px;border:1px solid #a6aaad;border-radius:50%;background:white}.best-move{margin-top:20px;border-bottom:1px solid var(--line);padding-bottom:20px}.small-label{font-size:11px;color:var(--muted)}.move-row{display:flex;align-items:center;justify-content:space-between;gap:12px}.move{font-size:49px;line-height:1.35;color:var(--blue);letter-spacing:-3px}.move-badge{color:var(--blue);background:#edf2fb;border-radius:3px;padding:3px 8px;font-size:10px}.evaluation{display:flex;justify-content:space-between;align-items:center;padding:17px 0;border-bottom:1px solid var(--line)}.score{font-size:23px;line-height:1.4}.evaluation-note,.analysis-note{font-size:10px;color:var(--muted)}.variation{padding-top:17px}.variation-line{margin-top:8px;padding:10px 12px;background:#f2f3f0;font-size:13px;word-spacing:7px;border-radius:4px}.variation-line strong{color:var(--blue)}.analysis-note{margin-top:13px}.hero-bottom{display:flex;justify-content:center;flex-wrap:wrap;gap:12px 26px;margin-top:23px;font-size:11px;color:var(--muted)}.hero-bottom span:before{content:"✓";color:var(--blue);margin-right:7px}.pain-section{padding:69px 0;border-block:1px solid var(--line);background:#efefea}.pain-layout{display:grid;grid-template-columns:1fr 1fr;gap:90px;align-items:center}.section-title{font:600 clamp(26px,3vw,36px)/1.5 var(--serif);letter-spacing:.5px}.section-copy{font-size:14px;line-height:2;color:var(--muted)}.pain-layout .section-title{margin:13px 0 18px}.pain-list{list-style:none;padding:0;margin:0}.pain-list li{display:flex;align-items:center;gap:18px;padding:19px 0;border-bottom:1px solid #d7dad5;font-size:14px}.pain-list li:first-child{padding-top:0}.pain-list li:last-child{border-bottom:0;padding-bottom:0}.pain-symbol{flex:0 0 32px;font:italic 26px Georgia,serif;color:#929b9d}.features{padding:93px 0 87px}.section-heading{text-align:center;margin-bottom:38px}.section-heading .section-title{margin:13px 0 12px}.feature-track{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.feature-card{min-width:0;background:var(--white);border:1px solid var(--line);border-radius:8px;overflow:hidden}.feature-mockup{height:229px;padding:24px 19px;background:#eff1ee;border-bottom:1px solid var(--line);display:flex;align-items:center}.mini-analysis{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.8fr);align-items:center;gap:13px;width:100%}.mini-info{min-width:0}.mini-info .small-label{font-size:10px}.mini-move{color:var(--blue);font-size:27px;line-height:1.5}.mini-divider{height:1px;background:#d4dadb;margin:12px 0}.mini-score{font-size:19px;margin-top:2px}.reply-list{list-style:none;padding:0;margin:7px 0 0;font-size:12px}.reply-list li{padding:3px 4px;white-space:nowrap}.reply-list li:first-child{color:var(--blue);background:#e0e8f5;border-radius:3px}.feature-body{padding:25px 25px 29px}.feature-number{font-size:10px;color:var(--blue);letter-spacing:2px}.feature-body h3{margin:6px 0 10px;font:600 21px var(--serif)}.feature-body p{font-size:13px;color:var(--muted);line-height:1.9}.chart-wrap{width:100%}.chart-heading{display:flex;align-items:center;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:9px}.chart{display:block;width:100%;height:auto}.chart text{font-family:"Microsoft JhengHei",sans-serif}.carousel-controls{display:none}.steps-section{padding:79px 0 85px;border-top:1px solid var(--line);scroll-margin-top:24px}.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:44px;margin-top:47px}.step-top{display:flex;align-items:center;gap:17px;margin-bottom:23px}.step-number{color:var(--blue);font:italic 32px/1 Georgia,serif}.step-rule{height:1px;background:var(--line);flex:1}.step h3{font:600 21px var(--serif);margin-bottom:10px}.step p{color:var(--muted);font-size:13px;line-height:1.9;min-height:50px}.step-example{margin-top:19px;display:inline-flex;gap:13px;align-items:center;min-height:39px;background:#eeefea;border:1px solid #e1e2dc;padding:5px 13px;border-radius:4px;font-size:12px}.side-token{display:inline-block;width:9px;height:9px;border-radius:50%;border:1px solid #8c9499;background:white;margin-right:5px}.side-token.black{background:#3b434d}.final-cta{text-align:center;border:1px solid var(--line);border-radius:9px;padding:55px 24px 58px;background:#f0f2ed}.cta-mark{font:40px/1.2 "Segoe UI Symbol",serif;color:var(--blue);margin-bottom:16px}.final-cta .section-copy{margin:13px 0 26px}.footer{padding:46px 0 25px}.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;border-bottom:1px solid var(--line);padding-bottom:25px}.footer .brand{font-size:21px}.footer-tagline{font-size:11px;color:var(--muted);margin-top:5px}.copyright{font-size:11px;color:var(--muted)}.footer-disclaimer{font-size:10px;color:var(--muted);text-align:center;margin-top:18px}
+@media(min-width:768px) and (max-width:1023px){.feature-track{gap:14px}.feature-mockup{height:218px;padding:15px 12px}.mini-analysis{gap:8px;grid-template-columns:minmax(0,1fr) 70px}.mini-move{font-size:23px}.feature-body{padding:21px 18px}.pain-layout{gap:40px}}
+@media(max-width:767px){.container{width:min(540px,calc(100% - 36px))}.header-inner{height:72px;gap:10px}.brand{font-size:22px}.brand-mark{font-size:29px}nav{gap:0}.nav-link{display:none}.button.small{font-size:12px;padding-inline:12px;gap:8px}.hero{padding:46px 0 49px}.hero h1{max-width:350px;margin:18px auto;font-size:clamp(32px,7.8vw,41px);letter-spacing:0}.hero h1 span{display:block}.hero-description{font-size:14px;max-width:340px}.hero-cta{margin-top:24px}.analysis-window{margin-top:33px;max-width:420px}.window-bar{padding:11px 14px;font-size:10px}.analysis-layout{grid-template-columns:1fr}.board-pane{padding:19px 22px 13px;border-right:0;border-bottom:1px solid var(--line)}.board-caption{margin-top:4px}.analysis-pane{padding:20px 22px 22px}.best-move{margin-top:12px;padding-bottom:13px}.move{font-size:37px}.evaluation{padding:12px 0}.variation{padding-top:12px}.analysis-note{margin-top:10px}.hero-bottom{gap:9px 15px;font-size:10px}.pain-section{padding:45px 0}.pain-layout{grid-template-columns:1fr;gap:27px}.pain-list li{font-size:13px;gap:10px}.section-title{font-size:27px}.section-copy{font-size:13px}.features{padding:53px 0}.section-heading{margin-bottom:27px}.feature-track{display:block}.feature-card{display:none}.feature-card.is-active{display:block;animation:card-in .24s ease-out}.feature-mockup{height:245px;padding:22px}.mini-analysis{max-width:330px;margin:auto;grid-template-columns:minmax(0,1fr) 103px;gap:20px}.mini-info .small-label{font-size:11px}.mini-move{font-size:30px}.reply-list{font-size:13px}.feature-body{min-height:169px;padding:23px}.chart-wrap{max-width:345px;margin:auto}.carousel-controls{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:20px}.carousel-arrow{min-height:44px;min-width:82px;background:transparent;border:1px solid #cdd2d4;border-radius:5px;color:var(--ink);padding:8px 12px;font-size:12px}.carousel-arrow:hover{background:#e9edf3;border-color:var(--blue)}.dots{display:flex;align-items:center}.dot{width:30px;height:44px;border:0;background:transparent;display:grid;place-items:center;padding:0}.dot:after{content:"";height:6px;width:6px;border-radius:50%;background:#c4c9cc}.dot[aria-current="true"]:after{width:19px;border-radius:5px;background:var(--blue)}.steps-section{padding:47px 0 52px}.steps{grid-template-columns:1fr;gap:29px;margin-top:31px}.step-top{margin-bottom:14px}.step p{min-height:0}.step-example{margin-top:13px}.final-cta{padding:36px 17px 39px}.final-cta .section-title{font-size:25px}.footer{padding-top:31px}.footer-inner{align-items:flex-start;gap:14px}.copyright{font-size:10px;padding-top:9px;white-space:nowrap}}
+@keyframes card-in{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 </style>
 </head>
-<body class="antialiased">
-
-  <!-- ══════════ 1. Hero ══════════ -->
-  <header class="px-6 pt-20 pb-24 md:pt-28 md:pb-32">
-    <div class="mx-auto max-w-3xl text-center">
-      <span class="inline-block rounded-full border border-[var(--line)] bg-[var(--paper-card)] px-3.5 py-1.5 text-[11px] tracking-[0.18em] text-[var(--ink-soft)]">
-        瑞士輪賽制 · 免費工具
-      </span>
-
-      <h1 class="mt-8 text-[30px] leading-[1.28] font-semibold tracking-tight sm:text-[40px] md:text-[52px] md:leading-[1.2]">
-        12人瑞士輪計分與對局紀錄
-      </h1>
-
-      <p class="mx-auto mt-6 max-w-xl text-[15px] leading-[1.9] text-[var(--ink-soft)] md:text-[17px]">
-        紀錄每一場的對局結果，追蹤你的戰績
-      </p>
-
-      <div class="mt-10">
-        <button type="button" data-cta="start"
-          class="btn-blue px-7 py-3.5 text-[15px] font-medium md:text-[16px]">
-          開始使用 →
-        </button>
-      </div>
-
-      <p class="mt-5 text-[12px] tracking-wide text-[#A39D92]">免費使用 · 無需安裝 · 手機與電腦皆可操作</p>
-    </div>
-  </header>
-
-  <div class="mx-auto max-w-5xl px-6"><div class="hairline"></div></div>
-
-  <!-- ══════════ 2. 痛點 ══════════ -->
-  <section class="px-6 py-20 md:py-28">
-    <div class="mx-auto max-w-2xl text-center">
-      <h2 class="text-[22px] leading-[1.5] font-semibold tracking-tight sm:text-[28px] md:text-[32px]">
-        還在用紙筆或記憶算戰績？
-      </h2>
-      <p class="mt-6 text-left text-[15px] leading-[2.05] text-[var(--ink-soft)] md:text-center md:text-[16px]">
-        紙本記分表寫錯一格，就得整張重畫；記事本記到最後一輪，還要一筆一筆回頭加總小分；
-        用 Excel 雖然能算，但只要動到一個公式，整張表的排名就全部跑掉，更別提還要手動比對每位對手的強度（Buchholz／SOS）。
-        賽事一多，誰跟誰打過、誰的對手分比較高，往往得翻好幾頁才找得到答案——而真正該被記住的那場逆轉勝，反而沒人記得。
-      </p>
-    </div>
-  </section>
-
-  <!-- ══════════ 3. 核心功能 ══════════ -->
-  <section class="px-6 pb-20 md:pb-28">
-    <div class="mx-auto max-w-5xl">
-
-      <div class="mx-auto max-w-2xl text-center">
-        <h2 class="text-[22px] leading-[1.5] font-semibold tracking-tight sm:text-[28px] md:text-[32px]">核心功能</h2>
-        <p class="mt-5 text-[15px] leading-[1.9] text-[var(--ink-soft)] md:text-[16px]">
-          計分、房間、走勢，三個動作就能完成一場賽事的全部紀錄。
-        </p>
-      </div>
-
-      <!-- 輪播外框：手機一次一張，桌機三張並排 -->
-      <div class="mt-14 overflow-hidden px-1 py-1 md:mt-16 md:overflow-visible">
-        <div id="carouselTrack" class="track flex w-full md:gap-6">
-
-          <!-- 卡片 1：計分追蹤 -->
-          <div class="w-full shrink-0 md:w-[calc((100%-3rem)/3)]">
-            <article class="paper-card h-full p-6 md:p-7">
-              <div class="flex justify-center">
-                <div class="w-[196px] rounded-[26px] border border-[#E6E1D8] bg-[#F4F1EB] p-[7px] shadow-[0_18px_34px_-22px_rgba(47,46,43,.5)]">
-                  <div class="h-[258px] overflow-hidden rounded-[20px] bg-white px-3.5 py-3">
-                    <div class="mx-auto mb-3 h-1 w-9 rounded-full bg-[#EAE5DC]"></div>
-
-                    <div class="flex items-center justify-between border-b border-[#F1EDE5] pb-2 text-[10px] text-[#9A958B]">
-                      <span>週五例行賽</span><span>第 3 輪</span>
-                    </div>
-
-                    <div class="mt-3 space-y-[9px]">
-                      <div class="flex items-center gap-2">
-                        <span class="flex h-4 w-4 shrink-0 items-center justify-center rounded-md bg-[#EEF3FE] text-[9px] font-semibold text-[var(--blue)]">1</span>
-                        <div class="min-w-0 flex-1">
-                          <div class="flex items-center justify-between text-[10px]"><span class="truncate text-[#3A3833]">隊伍 A</span><span class="font-semibold">12</span></div>
-                          <div class="mt-1 h-1 overflow-hidden rounded-full bg-[#F1EDE5]"><div class="h-full rounded-full bg-[var(--blue)]" style="width:100%"></div></div>
-                        </div>
-                      </div>
-                      <div class="flex items-center gap-2">
-                        <span class="flex h-4 w-4 shrink-0 items-center justify-center rounded-md bg-[#F4F1EB] text-[9px] font-semibold text-[#77736B]">2</span>
-                        <div class="min-w-0 flex-1">
-                          <div class="flex items-center justify-between text-[10px]"><span class="truncate text-[#3A3833]">隊伍 B</span><span class="font-semibold">10</span></div>
-                          <div class="mt-1 h-1 overflow-hidden rounded-full bg-[#F1EDE5]"><div class="h-full rounded-full bg-[#9CB6F5]" style="width:83%"></div></div>
-                        </div>
-                      </div>
-                      <div class="flex items-center gap-2">
-                        <span class="flex h-4 w-4 shrink-0 items-center justify-center rounded-md bg-[#F4F1EB] text-[9px] font-semibold text-[#77736B]">3</span>
-                        <div class="min-w-0 flex-1">
-                          <div class="flex items-center justify-between text-[10px]"><span class="truncate text-[#3A3833]">隊伍 C</span><span class="font-semibold">9</span></div>
-                          <div class="mt-1 h-1 overflow-hidden rounded-full bg-[#F1EDE5]"><div class="h-full rounded-full bg-[#9CB6F5]" style="width:75%"></div></div>
-                        </div>
-                      </div>
-                      <div class="flex items-center gap-2">
-                        <span class="flex h-4 w-4 shrink-0 items-center justify-center rounded-md bg-[#F4F1EB] text-[9px] font-semibold text-[#77736B]">4</span>
-                        <div class="min-w-0 flex-1">
-                          <div class="flex items-center justify-between text-[10px]"><span class="truncate text-[#3A3833]">隊伍 D</span><span class="font-semibold">7</span></div>
-                          <div class="mt-1 h-1 overflow-hidden rounded-full bg-[#F1EDE5]"><div class="h-full rounded-full bg-[#C7D5F8]" style="width:58%"></div></div>
-                        </div>
-                      </div>
-                      <div class="flex items-center gap-2">
-                        <span class="flex h-4 w-4 shrink-0 items-center justify-center rounded-md bg-[#F4F1EB] text-[9px] font-semibold text-[#77736B]">5</span>
-                        <div class="min-w-0 flex-1">
-                          <div class="flex items-center justify-between text-[10px]"><span class="truncate text-[#3A3833]">隊伍 E</span><span class="font-semibold">5</span></div>
-                          <div class="mt-1 h-1 overflow-hidden rounded-full bg-[#F1EDE5]"><div class="h-full rounded-full bg-[#C7D5F8]" style="width:42%"></div></div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="mt-3 border-t border-[#F1EDE5] pt-2 text-[9px] text-[#A39D92]">小分 18 · 對手分 24.5</div>
-                  </div>
-                </div>
-              </div>
-
-              <h3 class="mt-7 text-[18px] font-semibold tracking-tight md:text-[19px]">計分追蹤</h3>
-              <p class="mt-3 text-[14px] leading-[1.95] text-[var(--ink-soft)]">
-                每一輪結束後即時更新積分與小分，對手分（SOS）自動累計，排名永遠是對的，不必再手算。
-              </p>
-            </article>
-          </div>
-
-          <!-- 卡片 2：房間管理 -->
-          <div class="w-full shrink-0 md:w-[calc((100%-3rem)/3)]">
-            <article class="paper-card h-full p-6 md:p-7">
-              <div class="flex justify-center">
-                <div class="w-[196px] rounded-[26px] border border-[#E6E1D8] bg-[#F4F1EB] p-[7px] shadow-[0_18px_34px_-22px_rgba(47,46,43,.5)]">
-                  <div class="h-[258px] overflow-hidden rounded-[20px] bg-white px-3.5 py-3">
-                    <div class="mx-auto mb-3 h-1 w-9 rounded-full bg-[#EAE5DC]"></div>
-
-                    <div class="flex items-center justify-between border-b border-[#F1EDE5] pb-2 text-[10px] text-[#9A958B]">
-                      <span>我的房間</span><span>3</span>
-                    </div>
-
-                    <div class="mt-3 space-y-2">
-                      <div class="rounded-xl border border-[#F1EDE5] p-2.5">
-                        <div class="flex items-center justify-between">
-                          <span class="text-[10px] font-semibold text-[#3A3833]">週五例行賽</span>
-                          <span class="rounded-full bg-[#EAF6EE] px-1.5 py-[2px] text-[8px] text-[#2F8A55]">進行中</span>
-                        </div>
-                        <div class="mt-1.5 flex items-center justify-between text-[9px] text-[#A39D92]">
-                          <span>代碼 A7K2</span><span>12 人 · 第 3 輪</span>
-                        </div>
-                      </div>
-
-                      <div class="rounded-xl border border-[#F1EDE5] p-2.5">
-                        <div class="flex items-center justify-between">
-                          <span class="text-[10px] font-semibold text-[#3A3833]">週末快棋盃</span>
-                          <span class="rounded-full bg-[#EEF3FE] px-1.5 py-[2px] text-[8px] text-[var(--blue)]">報名中</span>
-                        </div>
-                        <div class="mt-1.5 flex items-center justify-between text-[9px] text-[#A39D92]">
-                          <span>代碼 Q9M4</span><span>8 人 · 未開始</span>
-                        </div>
-                      </div>
-
-                      <div class="rounded-xl border border-[#F1EDE5] p-2.5">
-                        <div class="flex items-center justify-between">
-                          <span class="text-[10px] font-semibold text-[#3A3833]">春季積分賽</span>
-                          <span class="rounded-full bg-[#F4F1EB] px-1.5 py-[2px] text-[8px] text-[#8C877D]">已結束</span>
-                        </div>
-                        <div class="mt-1.5 flex items-center justify-between text-[9px] text-[#A39D92]">
-                          <span>代碼 B3X8</span><span>12 人 · 第 5 輪</span>
-                        </div>
-                      </div>
-
-                      <div class="rounded-xl border border-dashed border-[#DAD4C8] py-2 text-center text-[9px] text-[var(--blue)]">＋ 建立新房間</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <h3 class="mt-7 text-[18px] font-semibold tracking-tight md:text-[19px]">房間管理</h3>
-              <p class="mt-3 text-[14px] leading-[1.95] text-[var(--ink-soft)]">
-                一個房間就是一場賽事。產生房間代碼、邀請參賽者、設定輪數與配對方式，全部在同一個頁面完成。
-              </p>
-            </article>
-          </div>
-
-          <!-- 卡片 3：走勢分析 -->
-          <div class="w-full shrink-0 md:w-[calc((100%-3rem)/3)]">
-            <article class="paper-card h-full p-6 md:p-7">
-              <div class="flex justify-center">
-                <div class="w-[196px] rounded-[26px] border border-[#E6E1D8] bg-[#F4F1EB] p-[7px] shadow-[0_18px_34px_-22px_rgba(47,46,43,.5)]">
-                  <div class="h-[258px] overflow-hidden rounded-[20px] bg-white px-3.5 py-3">
-                    <div class="mx-auto mb-3 h-1 w-9 rounded-full bg-[#EAE5DC]"></div>
-
-                    <div class="flex items-center justify-between border-b border-[#F1EDE5] pb-2 text-[10px] text-[#9A958B]">
-                      <span>戰績走勢</span><span>近 6 輪</span>
-                    </div>
-
-                    <div class="mt-4">
-                      <svg viewBox="0 0 160 92" class="h-[118px] w-full" role="img" aria-label="戰績走勢折線圖示意">
-                        <line x1="0" y1="20" x2="160" y2="20" stroke="#F1EDE5" stroke-width="1"></line>
-                        <line x1="0" y1="42" x2="160" y2="42" stroke="#F1EDE5" stroke-width="1"></line>
-                        <line x1="0" y1="64" x2="160" y2="64" stroke="#F1EDE5" stroke-width="1"></line>
-                        <line x1="0" y1="86" x2="160" y2="86" stroke="#F1EDE5" stroke-width="1"></line>
-
-                        <polygon points="8,78 37,66 66,70 94,52 123,40 152,26 152,86 8,86"
-                                 fill="#2563EB" opacity="0.07"></polygon>
-
-                        <polyline points="8,78 37,66 66,70 94,52 123,40 152,26"
-                                  fill="none" stroke="#2563EB" stroke-width="2"
-                                  stroke-linecap="round" stroke-linejoin="round"></polyline>
-
-                        <circle cx="8"   cy="78" r="2.6" fill="#fff" stroke="#2563EB" stroke-width="1.6"></circle>
-                        <circle cx="37"  cy="66" r="2.6" fill="#fff" stroke="#2563EB" stroke-width="1.6"></circle>
-                        <circle cx="66"  cy="70" r="2.6" fill="#fff" stroke="#2563EB" stroke-width="1.6"></circle>
-                        <circle cx="94"  cy="52" r="2.6" fill="#fff" stroke="#2563EB" stroke-width="1.6"></circle>
-                        <circle cx="123" cy="40" r="2.6" fill="#fff" stroke="#2563EB" stroke-width="1.6"></circle>
-                        <circle cx="152" cy="26" r="3.4" fill="#2563EB" stroke="#fff" stroke-width="1.6"></circle>
-
-                        <text x="8"   y="91" font-size="6" fill="#A39D92" text-anchor="middle">R1</text>
-                        <text x="37"  y="91" font-size="6" fill="#A39D92" text-anchor="middle">R2</text>
-                        <text x="66"  y="91" font-size="6" fill="#A39D92" text-anchor="middle">R3</text>
-                        <text x="94"  y="91" font-size="6" fill="#A39D92" text-anchor="middle">R4</text>
-                        <text x="123" y="91" font-size="6" fill="#A39D92" text-anchor="middle">R5</text>
-                        <text x="152" y="91" font-size="6" fill="#A39D92" text-anchor="middle">R6</text>
-                      </svg>
-                    </div>
-
-                    <div class="mt-3 flex items-center gap-3 text-[9px] text-[#A39D92]">
-                      <span class="flex items-center gap-1"><span class="h-1.5 w-3 rounded-full bg-[var(--blue)]"></span>你的積分</span>
-                      <span class="flex items-center gap-1"><span class="h-1.5 w-3 rounded-full bg-[#E7E2D9]"></span>平均</span>
-                    </div>
-
-                    <div class="mt-3 rounded-xl bg-[#F8F6F1] p-2.5 text-[9px] leading-[1.7] text-[#77736B]">
-                      第 4 輪起連勝，排名從第 5 名升到第 2 名。
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <h3 class="mt-7 text-[18px] font-semibold tracking-tight md:text-[19px]">走勢分析</h3>
-              <p class="mt-3 text-[14px] leading-[1.95] text-[var(--ink-soft)]">
-                用折線圖追蹤積分與排名變化，看得出誰在後段追上來、誰的對手分最硬，賽後覆盤一目了然。
-              </p>
-            </article>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- 手機版輪播控制項 -->
-      <div class="mt-8 flex items-center justify-center gap-5 md:hidden">
-        <button type="button" id="carouselPrev" class="nav-btn" aria-label="上一張卡片">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        <div id="carouselDots" class="flex items-center gap-2"></div>
-        <button type="button" id="carouselNext" class="nav-btn" aria-label="下一張卡片">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-      </div>
-
-    </div>
-  </section>
-
-  <div class="mx-auto max-w-5xl px-6"><div class="hairline"></div></div>
-
-  <!-- ══════════ 4. 三步驟開始使用 ══════════ -->
-  <section id="steps" class="scroll-mt-10 px-6 py-20 md:py-28">
-    <div class="mx-auto max-w-4xl">
-
-      <div class="text-center">
-        <h2 class="text-[22px] leading-[1.5] font-semibold tracking-tight sm:text-[28px] md:text-[32px]">三步驟開始使用</h2>
-        <p class="mt-5 text-[15px] leading-[1.9] text-[var(--ink-soft)] md:text-[16px]">
-          從開房到看見戰績走勢，只要三個步驟。
-        </p>
-      </div>
-
-      <ol class="mt-14 space-y-10 md:mt-16 md:space-y-0 md:grid md:grid-cols-3 md:gap-10">
-
-        <li>
-          <div class="text-[13px] font-semibold tracking-[0.2em] text-[var(--blue)]">STEP 01</div>
-          <h3 class="mt-3 text-[19px] font-semibold tracking-tight">建立房間</h3>
-          <p class="mt-3 text-[14px] leading-[1.95] text-[var(--ink-soft)]">
-            輸入賽事名稱與參賽人數，系統自動產生房間代碼，把代碼分享出去就能讓大家加入。
-          </p>
-        </li>
-
-        <li>
-          <div class="text-[13px] font-semibold tracking-[0.2em] text-[var(--blue)]">STEP 02</div>
-          <h3 class="mt-3 text-[19px] font-semibold tracking-tight">記錄分數</h3>
-          <p class="mt-3 text-[14px] leading-[1.95] text-[var(--ink-soft)]">
-            每輪結束後點選勝方或輸入比分，積分、小分與對手分即時累計，不必再拿計算機。
-          </p>
-        </li>
-
-        <li>
-          <div class="text-[13px] font-semibold tracking-[0.2em] text-[var(--blue)]">STEP 03</div>
-          <h3 class="mt-3 text-[19px] font-semibold tracking-tight">查看分析</h3>
-          <p class="mt-3 text-[14px] leading-[1.95] text-[var(--ink-soft)]">
-            隨時查看完整排名、對局紀錄與戰績走勢圖，掌握每位選手的狀態變化。
-          </p>
-        </li>
-
-      </ol>
-    </div>
-  </section>
-
-  <div class="mx-auto max-w-5xl px-6"><div class="hairline"></div></div>
-
-  <!-- ══════════ 5. 底部 CTA ══════════ -->
-  <footer class="px-6 py-24 md:py-32">
-    <div class="mx-auto max-w-2xl text-center">
-      <h2 class="text-[24px] leading-[1.5] font-semibold tracking-tight sm:text-[30px] md:text-[34px]">
-        準備好開始記錄了嗎？
-      </h2>
-      <div class="mt-9">
-        <button type="button" data-cta="start"
-          class="btn-blue px-7 py-3.5 text-[15px] font-medium md:text-[16px]">
-          開始使用 →
-        </button>
-      </div>
-      <p class="mt-10 text-[12px] tracking-wide text-[#A39D92]">瑞士輪計分與對局紀錄 · 免費使用</p>
-    </div>
-  </footer>
-
+<body>
+<a class="skip" href="#main">跳至主要內容</a>
+<header class="header"><div class="container header-inner"><a class="brand" href="#" aria-label="ChessOracle 首頁"><span class="brand-mark" aria-hidden="true">♞</span><span>ChessOracle</span></a><nav aria-label="主要導覽"><a class="nav-link" href="#features">核心功能</a><a class="nav-link" href="#start">如何開始</a><button class="button small" type="button" data-start>開始分析 <span aria-hidden="true">→</span></button></nav></div></header>
+<main id="main">
+<section class="hero container" aria-labelledby="hero-title"><div class="eyebrow">ChessOracle · 西洋棋分析筆記</div><h1 id="hero-title">看見棋盤之外的<span>下一步。</span></h1><p class="hero-description">分析每一個局面，找到最佳應對，<br class="hidden sm:block">理解對手下一步可能怎麼走。</p><button class="button hero-cta" type="button" data-start>開始分析 <span aria-hidden="true">→</span></button><p class="hero-note">讓每一步，都成為進步的起點。</p>
+<figure class="analysis-window" aria-label="棋盤分析功能示意"><figcaption class="window-bar"><span class="window-title">局面分析 <span class="notation">/ 01</span></span><span class="demo-tag">功能示意</span></figcaption><div class="analysis-layout"><div class="board-pane"><div class="board-with-eval"><div class="eval-bar" aria-hidden="true"></div><div><div class="board" data-board="recommend" role="img" aria-label="西洋棋開局局面，藍色箭頭表示白馬由 g1 移至 f3"></div><div class="files" aria-hidden="true"><span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span></div></div></div><div class="board-caption"><span>開放性開局</span><span class="notation">1. e4 e5</span></div></div><div class="analysis-pane"><div class="analysis-heading"><span>分析摘要</span><span class="turn">白方走棋</span></div><div class="best-move"><div class="small-label">最佳著法</div><div class="move-row"><strong class="notation move">Nf3</strong><span class="move-badge">推薦著法</span></div></div><div class="evaluation"><div><div class="small-label">局面評估</div><div class="evaluation-note">白方略優</div></div><strong class="notation score">+0.42</strong></div><div class="variation"><div class="small-label">主要變化</div><div class="notation variation-line"><strong>Nf3</strong> Nc6 Bb5 a6</div></div><p class="analysis-note">出動王翼馬，控制中心，為王車易位做準備。</p></div></div></figure><div class="hero-bottom"><span>最佳應對</span><span>主要變化</span><span>棋局複盤</span></div></section>
+<section class="pain-section" aria-labelledby="pain-title"><div class="container pain-layout"><div><div class="eyebrow">從疑問，到理解</div><h2 class="section-title" id="pain-title">還在靠感覺猜下一步？</h2><p class="section-copy">棋局結束後才知道哪一步走錯，分析時又得在棋譜、棋盤與引擎之間來回切換。ChessOracle 把局面、最佳著法與主要變化集中在同一個畫面。</p></div><ul class="pain-list"><li><span class="pain-symbol" aria-hidden="true">?!</span><span>不知道哪一步才是關鍵</span></li><li><span class="pain-symbol" aria-hidden="true">?</span><span>看得懂棋譜，卻不一定看得懂局面</span></li><li><span class="pain-symbol" aria-hidden="true">…</span><span>想研究對手的下一步，卻缺乏系統性的分析方式</span></li></ul></div></section>
+<section class="features container" id="features" aria-labelledby="features-title"><div class="section-heading"><div class="eyebrow">三個視角，一次看清</div><h2 class="section-title" id="features-title">一個棋盤，看懂整個局面。</h2><p class="section-copy">從眼前的選擇，到整盤棋的脈絡。</p></div><div id="feature-track" class="feature-track" aria-label="核心功能介紹">
+<article class="feature-card is-active" id="feature-1" aria-labelledby="feature-title-1"><div class="feature-mockup"><div class="mini-analysis"><div class="board mini-board" data-board="recommend" role="img" aria-label="白馬由 g1 移至 f3 的最佳著法示意"></div><div class="mini-info"><div class="small-label">最佳著法</div><div class="notation mini-move">Nf3</div><div class="mini-divider"></div><div class="small-label">評估</div><div class="notation mini-score">+0.42</div></div></div></div><div class="feature-body"><div class="feature-number notation">01 /</div><h3 id="feature-title-1">最佳著法</h3><p>輸入目前局面後，快速找出最值得考慮的下一步。</p></div></article>
+<article class="feature-card" id="feature-2" aria-labelledby="feature-title-2"><div class="feature-mockup"><div class="mini-analysis"><div class="board mini-board" data-board="response" role="img" aria-label="白方走 Nf3 後，黑馬由 b8 移至 c6 的可能回應示意"></div><div class="mini-info"><div class="small-label">你的著法</div><div class="notation mini-move">Nf3</div><div class="mini-divider"></div><div class="small-label">對手可能回應</div><ol class="notation reply-list"><li>1. ...Nc6</li><li>2. ...Nf6</li><li>3. ...d6</li></ol></div></div></div><div class="feature-body"><div class="feature-number notation">02 /</div><h3 id="feature-title-2">對手預測</h3><p>不只告訴你該怎麼走，也分析對手最可能的最佳回應。</p></div></article>
+<article class="feature-card" id="feature-3" aria-labelledby="feature-title-3"><div class="feature-mockup"><figure class="chart-wrap"><figcaption class="chart-heading"><span>局面評估</span><span>整盤走勢 · 示意</span></figcaption><svg class="chart" viewBox="0 0 310 173" role="img" aria-labelledby="chart-title chart-desc"><title id="chart-title">棋局評估走勢</title><desc id="chart-desc">第 1、10、20、30、40 步的評估依序為加 0.3、加 0.5、加 0.2、負 0.8、負 1.2；第 30 步標記為關鍵失誤。</desc><g stroke="#d9dfdc"><path d="M34 20H292M34 57H292M34 94H292M34 131H292"/></g><path d="M34 57H292" stroke="#b3bec4" stroke-dasharray="3 4"/><g fill="#707a80" font-size="9"><text x="2" y="24">+0.6</text><text x="16" y="60">0</text><text x="2" y="98">−0.6</text><text x="2" y="135">−1.2</text></g><path d="M36 38.5L99 26.2L163 44.7L227 106.3L290 131" fill="none" stroke="#2858bc" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round"/><g fill="#fffefa" stroke="#2858bc" stroke-width="1.8"><circle cx="36" cy="38.5" r="3"/><circle cx="99" cy="26.2" r="3"/><circle cx="163" cy="44.7" r="3"/><circle cx="290" cy="131" r="3"/></g><path d="M227 76V132" stroke="#a87955" stroke-dasharray="3 3"/><circle cx="227" cy="106.3" r="5" fill="#fffefa" stroke="#a87955" stroke-width="2"/><rect x="193" y="56" width="68" height="21" rx="3" fill="#eee5da"/><text x="227" y="70" text-anchor="middle" fill="#815b3e" font-size="10">關鍵失誤</text><g fill="#707a80" font-size="9" text-anchor="middle"><text x="36" y="153">第 1 步</text><text x="99" y="153">第 10 步</text><text x="163" y="153">第 20 步</text><text x="227" y="153">第 30 步</text><text x="290" y="153">第 40 步</text></g></svg></figure></div><div class="feature-body"><div class="feature-number notation">03 /</div><h3 id="feature-title-3">棋局分析</h3><p>從整盤棋的走法與評估變化，找出關鍵轉折與值得複習的局面。</p></div></article></div>
+<div class="carousel-controls" aria-label="功能卡片輪播控制"><button type="button" class="carousel-arrow" id="previous" aria-controls="feature-track">← 上一張</button><div class="dots" aria-label="選擇功能卡片"><button type="button" class="dot" data-index="0" aria-label="第 1 張：最佳著法" aria-controls="feature-1" aria-current="true"></button><button type="button" class="dot" data-index="1" aria-label="第 2 張：對手預測" aria-controls="feature-2" aria-current="false"></button><button type="button" class="dot" data-index="2" aria-label="第 3 張：棋局分析" aria-controls="feature-3" aria-current="false"></button></div><button type="button" class="carousel-arrow" id="next" aria-controls="feature-track">下一張 →</button></div><p class="sr-only" id="carousel-status" role="status" aria-live="polite" aria-atomic="true"></p><noscript><style>@media(max-width:767px){.feature-card{display:block;margin-bottom:20px}.carousel-controls{display:none}}</style><p class="section-copy">啟用 JavaScript 即可使用輪播與「開始分析」按鈕；也可透過導覽前往三步驟說明。</p></noscript></section>
+<section class="steps-section" id="start" tabindex="-1" aria-labelledby="start-title"><div class="container"><div class="section-heading"><div class="eyebrow">讓分析，變得直覺</div><h2 class="section-title" id="start-title">三步驟開始分析</h2><p class="section-copy">把棋局交給 ChessOracle，從每一步理解自己的選擇。</p></div><div class="steps"><article class="step"><div class="step-top"><span class="step-number"><span class="sr-only">步驟 </span>01</span><span class="step-rule" aria-hidden="true"></span></div><h3>設定棋局</h3><p>選擇執棋方，建立目前棋盤局面。</p><div class="step-example"><span><i class="side-token" aria-hidden="true"></i>白方</span><span class="muted">/</span><span><i class="side-token black" aria-hidden="true"></i>黑方</span></div></article><article class="step"><div class="step-top"><span class="step-number"><span class="sr-only">步驟 </span>02</span><span class="step-rule" aria-hidden="true"></span></div><h3>輸入棋步</h3><p>按照實際棋局輸入對手或自己的走法，讓棋盤同步更新。</p><div class="step-example notation"><span>e7</span><span class="muted">→</span><span>e5</span></div></article><article class="step"><div class="step-top"><span class="step-number"><span class="sr-only">步驟 </span>03</span><span class="step-rule" aria-hidden="true"></span></div><h3>查看分析</h3><p>取得最佳應對、局面評估與主要變化。</p><div class="step-example notation"><span>Nf3</span><span class="muted">·</span><span>+0.42</span></div></article></div></div></section>
+<section class="container" aria-labelledby="cta-title"><div class="final-cta"><div class="cta-mark" aria-hidden="true">♘</div><h2 class="section-title" id="cta-title">準備好看懂下一步了嗎？</h2><p class="section-copy">不要只知道哪一步最好，也理解為什麼。</p><button class="button" type="button" data-start>開始分析 <span aria-hidden="true">→</span></button></div></section>
+</main>
+<footer class="container footer"><div class="footer-inner"><div><a class="brand" href="#" aria-label="ChessOracle 返回首頁"><span class="brand-mark" aria-hidden="true">♞</span><span>ChessOracle</span></a><p class="footer-tagline">看見棋盤之外的下一步。</p></div><p class="copyright">© 2026 ChessOracle</p></div><p class="footer-disclaimer">專注西洋棋學習、棋局複盤與局面分析。頁面數據為功能示意，不涉及金錢交易、下注或賭博。</p></footer>
 <script>
-(function () {
+(() => {
   'use strict';
-
-  var track   = document.getElementById('carouselTrack');
-  var prevBtn = document.getElementById('carouselPrev');
-  var nextBtn = document.getElementById('carouselNext');
-  var dotsBox = document.getElementById('carouselDots');
-
-  if (track && prevBtn && nextBtn && dotsBox) {
-    var slides = Array.prototype.slice.call(track.children);
-    var total  = slides.length;
-    var index  = 0;
-    var mq     = window.matchMedia('(min-width: 768px)');
-
-    // 產生圓點指示器
-    slides.forEach(function (_, i) {
-      var dot = document.createElement('button');
-      dot.type = 'button';
-      dot.className = 'dot';
-      dot.setAttribute('aria-label', '切換到第 ' + (i + 1) + ' 張卡片');
-      dot.addEventListener('click', function () { go(i); });
-      dotsBox.appendChild(dot);
-    });
-    var dots = Array.prototype.slice.call(dotsBox.children);
-
-    function render() {
-      if (mq.matches) {
-        // 桌機：三張並排，清除位移並隱藏指示狀態
-        track.style.transform = '';
-        dots.forEach(function (d) { d.classList.remove('active'); });
-        return;
-      }
-      track.style.transform = 'translateX(-' + (index * 100) + '%)';
-      dots.forEach(function (d, i) { d.classList.toggle('active', i === index); });
-    }
-
-    function go(i) {
-      index = ((i % total) + total) % total;
-      render();
-    }
-
-    prevBtn.addEventListener('click', function () { go(index - 1); });
-    nextBtn.addEventListener('click', function () { go(index + 1); });
-
-    if (mq.addEventListener) { mq.addEventListener('change', render); }
-    else if (mq.addListener) { mq.addListener(render); }
-    window.addEventListener('resize', render);
-    window.addEventListener('orientationchange', render);
-    render();
-
-    // 手機滑動切換
-    var startX = null;
-    track.addEventListener('touchstart', function (e) {
-      startX = mq.matches ? null : e.touches[0].clientX;
-    }, { passive: true });
-    track.addEventListener('touchend', function (e) {
-      if (startX === null || mq.matches) { startX = null; return; }
-      var dx = e.changedTouches[0].clientX - startX;
-      if (Math.abs(dx) > 40) { go(dx < 0 ? index + 1 : index - 1); }
-      startX = null;
-    }, { passive: true });
-  }
-
-  // 所有「開始使用 →」按鈕 → 捲動到三步驟區塊
-  var ctas = document.querySelectorAll('[data-cta="start"]');
-  Array.prototype.forEach.call(ctas, function (btn) {
-    btn.addEventListener('click', function (e) {
-      e.preventDefault();
-      var target = document.getElementById('steps');
-      if (target && target.scrollIntoView) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
+  const startingPosition = [
+    ['r','n','b','q','k','b','n','r'],
+    ['p','p','p','p','','p','p','p'],
+    ['','','','','','','',''],
+    ['','','','','p','','',''],
+    ['','','','','P','','',''],
+    ['','','','','','','',''],
+    ['P','P','P','P','','P','P','P'],
+    ['R','N','B','Q','K','B','N','R']
+  ];
+  const symbols={k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟',K:'♚',Q:'♛',R:'♜',B:'♝',N:'♞',P:'♟'};
+  const svgNS='http://www.w3.org/2000/svg';
+  document.querySelectorAll('[data-board]').forEach((board,index)=>{
+    const response=board.dataset.board==='response';
+    const position=startingPosition.map(row=>row.slice());
+    if(response){position[7][6]='';position[5][5]='N';}
+    const from=response?[0,1]:[7,6],to=response?[2,2]:[5,5];
+    const fragment=document.createDocumentFragment();
+    position.forEach((row,r)=>row.forEach((code,c)=>{
+      const cell=document.createElement('div');
+      cell.className='square'+((r+c)%2?' dark':'');
+      cell.setAttribute('aria-hidden','true');
+      if((r===from[0]&&c===from[1])||(r===to[0]&&c===to[1]))cell.classList.add('highlight');
+      if(code){const piece=document.createElement('span');piece.className='piece'+(code===code.toUpperCase()?' white':'');piece.textContent=symbols[code];cell.appendChild(piece);}
+      if(c===0&&!board.classList.contains('mini-board')){const rank=document.createElement('span');rank.className='rank';rank.textContent=String(8-r);cell.appendChild(rank);}
+      fragment.appendChild(cell);
+    }));
+    board.appendChild(fragment);
+    function element(name,attributes){const el=document.createElementNS(svgNS,name);Object.entries(attributes).forEach(([key,value])=>el.setAttribute(key,String(value)));return el;}
+    const svg=element('svg',{viewBox:'0 0 800 800',class:'board-arrow','aria-hidden':'true'});
+    const defs=element('defs',{}),id='move-arrow-'+index;
+    const marker=element('marker',{id,viewBox:'0 0 10 10',refX:8,refY:5,markerWidth:3.5,markerHeight:3.5,orient:'auto'});
+    marker.appendChild(element('path',{d:'M0 0L10 5L0 10Z',fill:'#2858bc'}));defs.appendChild(marker);svg.appendChild(defs);
+    svg.appendChild(element('line',{x1:from[1]*100+50,y1:from[0]*100+50,x2:to[1]*100+50,y2:to[0]*100+50,stroke:'#2858bc','stroke-width':17,'stroke-linecap':'round',opacity:.8,'marker-end':'url(#'+id+')'}));board.appendChild(svg);
   });
+  document.querySelectorAll('[data-start]').forEach(button=>button.addEventListener('click',()=>{
+    document.getElementById('start').focus({preventScroll:true});
+    document.getElementById('start').scrollIntoView({behavior:'smooth'});
+  }));
+  const cards=Array.from(document.querySelectorAll('.feature-card'));
+  const dots=Array.from(document.querySelectorAll('.dot'));
+  const track=document.getElementById('feature-track'),status=document.getElementById('carousel-status');
+  const mobileQuery=window.matchMedia('(max-width: 767px)');
+  let current=0,resizeFrame=null,touchStart=null;
+  function renderCarousel(announce=false){
+    const mobile=mobileQuery.matches;
+    cards.forEach((card,index)=>{const active=index===current;card.classList.toggle('is-active',active);if(mobile&&!active)card.setAttribute('aria-hidden','true');else card.removeAttribute('aria-hidden');});
+    dots.forEach((dot,index)=>dot.setAttribute('aria-current',String(index===current)));
+    if(announce&&mobile)status.textContent='第 '+(current+1)+' 張，共 '+cards.length+' 張：'+cards[current].querySelector('h3').textContent;
+    else if(!mobile)status.textContent='';
+  }
+  function goTo(index){if(!mobileQuery.matches)return;current=(index+cards.length)%cards.length;renderCarousel(true);}
+  document.getElementById('previous').addEventListener('click',()=>goTo(current-1));
+  document.getElementById('next').addEventListener('click',()=>goTo(current+1));
+  dots.forEach(dot=>dot.addEventListener('click',()=>goTo(Number(dot.dataset.index))));
+  document.querySelector('.carousel-controls').addEventListener('keydown',event=>{if(event.key==='ArrowLeft'){event.preventDefault();goTo(current-1);}else if(event.key==='ArrowRight'){event.preventDefault();goTo(current+1);}});
+  track.addEventListener('touchstart',event=>{if(!mobileQuery.matches||event.touches.length!==1){touchStart=null;return;}touchStart={x:event.touches[0].clientX,y:event.touches[0].clientY};},{passive:true});
+  track.addEventListener('touchend',event=>{if(!touchStart||!event.changedTouches.length)return;const dx=event.changedTouches[0].clientX-touchStart.x,dy=event.changedTouches[0].clientY-touchStart.y;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.4)goTo(current+(dx<0?1:-1));touchStart=null;},{passive:true});
+  track.addEventListener('touchcancel',()=>{touchStart=null;},{passive:true});
+  window.addEventListener('resize',()=>{if(resizeFrame!==null)cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>{renderCarousel();resizeFrame=null;});});
+  renderCarousel();
 })();
 </script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
