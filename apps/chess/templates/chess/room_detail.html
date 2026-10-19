@@ -43,6 +43,7 @@
           <div>
             <p class="text-sm font-bold tracking-[.16em] text-blue-600">我的房間</p>
             <h1 class="mt-3 text-3xl font-black tracking-tight sm:text-5xl">{{ room.name }}</h1>
+                <p class="mt-3 text-sm font-bold text-stone-500">建立者：{{ room.owner.profile.display_name|default:room.owner.username }}</p>
           </div>
           <span class="w-fit rounded-full border border-blue-100 bg-blue-50 px-4 py-2 font-mono text-sm font-bold tracking-wider text-blue-700">{{ room.code }}</span>
         </div>

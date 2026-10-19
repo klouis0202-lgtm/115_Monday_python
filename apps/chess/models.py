@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -37,6 +38,13 @@ class Room(models.Model):
         related_name="room",
         verbose_name="LINE 群組",
     )
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="owned_rooms",
+        verbose_name="建立者",
+    )
+
     rules = models.ManyToManyField(
         Rule,
         related_name="rooms",
