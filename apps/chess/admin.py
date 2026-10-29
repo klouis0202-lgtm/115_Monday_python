@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Game, Room, SpecialRule
+from .models import Game, Room, SpecialRule, RoomGroup
 
 admin.site.site_header = "ChessOracle 管理"
 admin.site.site_title = "ChessOracle 後台"
@@ -9,11 +9,11 @@ admin.site.index_title = "網站管理"
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     filter_horizontal = ("special_rules",)
-    list_display = ("name", "code", "owner", "created_at")
+    list_display = ("name", "code", "group", "owner", "created_at")
     search_fields = ("name", "code", "owner__username")
     list_filter = ("created_at",)
     readonly_fields = ("created_at",)
-    list_select_related = ("owner",)
+    list_select_related = ("owner", "group")
 
 
 @admin.register(Game)
@@ -29,3 +29,10 @@ class GameAdmin(admin.ModelAdmin):
 class SpecialRuleAdmin(admin.ModelAdmin):
     list_display = ("name", "code", "order")
     search_fields = ("name", "code")
+
+
+@admin.register(RoomGroup)
+class RoomGroupAdmin(admin.ModelAdmin):
+    list_display = ("name", "owner", "created_at")
+    search_fields = ("name", "owner__username")
+    readonly_fields = ("created_at",)

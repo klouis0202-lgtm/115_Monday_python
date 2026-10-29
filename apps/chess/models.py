@@ -19,7 +19,23 @@ class SpecialRule(models.Model):
         return self.name
 
 
+class RoomGroup(models.Model):
+    name = models.CharField(max_length=100, verbose_name="群組名稱")
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="chess_groups", verbose_name="建立者")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="建立時間")
+
+    class Meta:
+        verbose_name = "群組"
+        verbose_name_plural = "群組"
+        ordering = ("name", "id")
+        constraints = [models.UniqueConstraint(fields=("owner", "name"), name="unique_chess_group_owner_name")]
+
+    def __str__(self):
+        return self.name
+
+
 class Room(models.Model):
+    group = models.ForeignKey(RoomGroup, null=True, blank=True, on_delete=models.SET_NULL, related_name="rooms", verbose_name="所屬群組")
     special_rules = models.ManyToManyField(SpecialRule, blank=True, related_name="rooms", verbose_name="特殊規則", help_text="可複選，也可以全部不選。")
     name = models.CharField(max_length=100, verbose_name="房間名稱")
     code = models.CharField(max_length=12, unique=True, verbose_name="房間代碼")

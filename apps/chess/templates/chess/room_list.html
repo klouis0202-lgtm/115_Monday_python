@@ -84,6 +84,7 @@
                 <h2 class="truncate text-xl font-black group-hover:text-blue-700">{{ room.name }}</h2>
                 <p class="mt-2 font-mono text-sm font-bold tracking-wider text-stone-500">{{ room.code }}</p>
                 <p class="mt-2 text-sm text-stone-500">建立者：{{ room.owner.profile.display_name|default:room.owner.username }}</p>
+<p class="mt-2 text-sm text-stone-500">所屬群組：{{ room.group.name|default:"無" }}</p>
               </div>
               <span class="shrink-0 text-xl text-stone-400 transition group-hover:translate-x-1 group-hover:text-blue-600" aria-hidden="true">→</span>
             </div>
@@ -96,7 +97,7 @@
         {% endfor %}
       </section>
 
-      <div class="mt-8 text-center">
+      <div class="mt-8 text-center"><a href="{% url 'chess:group-list' %}" class="mr-3 inline-flex rounded-full border border-stone-300 px-6 py-3 font-bold">我的群組</a><a href="{% url 'chess:group-create' %}" class="mr-3 inline-flex rounded-full border border-stone-300 px-6 py-3 font-bold">＋ 建立群組</a>
         <a href="{% url 'chess:room-create' %}" class="inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-700">
           ＋ 建立新房間
         </a>
