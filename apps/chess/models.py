@@ -5,7 +5,22 @@ from django.utils import timezone
 STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 
+class SpecialRule(models.Model):
+    code = models.SlugField(max_length=30, unique=True, verbose_name="規則代碼")
+    name = models.CharField(max_length=50, unique=True, verbose_name="規則名稱")
+    order = models.PositiveSmallIntegerField(default=0, verbose_name="排序")
+
+    class Meta:
+        verbose_name = "特殊規則"
+        verbose_name_plural = "特殊規則"
+        ordering = ("order", "id")
+
+    def __str__(self):
+        return self.name
+
+
 class Room(models.Model):
+    special_rules = models.ManyToManyField(SpecialRule, blank=True, related_name="rooms", verbose_name="特殊規則", help_text="可複選，也可以全部不選。")
     name = models.CharField(max_length=100, verbose_name="房間名稱")
     code = models.CharField(max_length=12, unique=True, verbose_name="房間代碼")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,

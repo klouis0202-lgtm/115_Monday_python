@@ -131,3 +131,20 @@ class ChessRoomTests(TestCase):
         game = Game.objects.create(room=self.room)
         response = self.client.get(self.detail)
         self.assertContains(response, reverse("chess:game-detail", args=[game.pk]))
+
+    def test_special_rule_selection(self):
+        from .models import SpecialRule
+        rules = SpecialRule.objects.all()
+        self.assertEqual(list(rules.values_list("name", flat=True)), ["王車易位", "兵的升變", "吃過路兵"])
+        self.client.force_login(self.owner)
+        url = reverse("chess:room-create")
+        self.assertContains(self.client.get(url), 'type="checkbox"', count=3)
+        ids = list(rules.values_list("id", flat=True))
+        for index, selected in enumerate([[], ids[:2], ids]):
+            response = self.client.post(url, {"name": "Rules", "code": "rules" + str(index), "special_rules": selected})
+            self.assertEqual(response.status_code, 302)
+            room = Room.objects.get(code="rules" + str(index))
+            self.assertEqual(set(room.special_rules.values_list("id", flat=True)), set(selected))
+        before = Room.objects.count()
+        self.assertEqual(self.client.post(url, {"name": "Invalid", "code": "invalid", "special_rules": [999999]}).status_code, 400)
+        self.assertEqual(Room.objects.count(), before)

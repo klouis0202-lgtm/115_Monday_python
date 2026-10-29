@@ -22,6 +22,7 @@ class RoomCreateView(LoginRequiredMixin, View):
                     room = form.save(commit=False)
                     room.owner = request.user
                     room.save()
+                    form.save_m2m()
             except IntegrityError:
                 form.add_error("code", "房間代碼無法使用，請換一個代碼再試一次。")
             else:

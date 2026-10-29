@@ -5,8 +5,9 @@ from .models import Game, Room
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
-        fields = ("name", "code")
+        fields = ("name", "code", "special_rules")
         widgets = {
+            "special_rules": forms.CheckboxSelectMultiple(),
             "name": forms.TextInput(attrs={"placeholder": "例如：義大利開局練習"}),
             "code": forms.TextInput(attrs={"placeholder": "例如：opening01"}),
         }

@@ -17,6 +17,7 @@
 <button class="rounded-full bg-blue-600 px-5 py-3 font-bold text-white" type="submit">建立對局</button>
 </form><p class="mt-4 text-sm text-stone-500">建立後會進入棋盤頁面；棋步輸入與引擎分析將於下一階段加入。</p>
 </div>
+<section class="mt-6"><h2 class="text-lg font-bold">特殊規則</h2><ul class="mt-3 flex flex-wrap gap-2">{% for rule in room.special_rules.all %}<li class="rounded-full bg-blue-50 px-4 py-2 text-sm text-blue-800">{{ rule.name }}</li>{% empty %}<li class="text-sm text-stone-500">未選擇特殊規則</li>{% endfor %}</ul><p class="mt-2 text-sm text-stone-500">目前僅保存房間設定，尚未套用至棋步驗證。</p></section>
 <h2 class="mt-10 text-xl font-bold">西洋棋對局</h2>
 <div class="mt-4 space-y-4">{% for game in room.games.all %}
 <article class="rounded-2xl border border-stone-200 p-5">
