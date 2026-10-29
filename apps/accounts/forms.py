@@ -7,7 +7,7 @@ class ProfileSignupForm(forms.Form):
     display_name = forms.CharField(
         max_length=50,
         label="顯示名稱",
-        help_text="這個名稱會顯示在麻將戰績簿中。",
+        help_text="這個名稱會顯示在ChessOracle中。",
     )
 
     def signup(self, request, user):

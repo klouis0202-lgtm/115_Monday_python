@@ -1,35 +1,24 @@
 from django.contrib import admin
+from .models import Game, Room
 
-from .models import LineGroup, Room, Game, Rule
-
-
-@admin.register(LineGroup)
-class LineGroupAdmin(admin.ModelAdmin):
-    list_display = ("display_name", "group_id", "created_at")
-    search_fields = ("display_name", "group_id")
-    readonly_fields = ("created_at",)
-
-
-@admin.register(Rule)
-class RuleAdmin(admin.ModelAdmin):
-    list_display = ("name", "created_at")
-    search_fields = ("name",)
-    readonly_fields = ("created_at",)
+admin.site.site_header = "ChessOracle 管理"
+admin.site.site_title = "ChessOracle 後台"
+admin.site.index_title = "網站管理"
 
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
-    list_display = ("name", "code", "line_group", "created_at")
-    search_fields = ("name", "code")
+    list_display = ("name", "code", "owner", "created_at")
+    search_fields = ("name", "code", "owner__username")
     list_filter = ("created_at",)
-    filter_horizontal = ("rules",)
     readonly_fields = ("created_at",)
-
+    list_select_related = ("owner",)
 
 
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
-    list_display = ("room", "date", "dong_money", "rounds", "created_at")
-    list_filter = ("room", "date")
+    list_display = ("room", "date", "player_color", "status", "result", "created_at")
+    list_filter = ("status", "player_color", "result", "date")
     search_fields = ("room__name", "room__code")
-    readonly_fields = ("created_at",)
+    readonly_fields = ("initial_fen", "current_fen", "created_at")
+    list_select_related = ("room",)
